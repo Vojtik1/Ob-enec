@@ -6,6 +6,7 @@ import random
 import string
 
 class WordGuessingApp(App):
+    #Oběšenec
     stages = [
         '''
           +---+
@@ -64,15 +65,15 @@ class WordGuessingApp(App):
     ]
 
     def build(self):
+        #Vybere slovo z "word_list" a podle jeho délky vyobrazí počet _
         self.chosen_word = random.choice(word_list)
         self.word_length = len(self.chosen_word)
         self.display = ["_"] * self.word_length
         self.lives = 6
         self.current_stage = 0
 
+        #Vytvoří rozhraní
         main_layout = BoxLayout(orientation='vertical', spacing=10)
-
-        # BoxLayout for word-related components
         word_layout = BoxLayout(orientation='vertical', spacing=10)
 
         self.word_label = Label(text=' '.join(self.display), font_size=48)
@@ -82,17 +83,17 @@ class WordGuessingApp(App):
         word_layout.add_widget(self.word_label)
         word_layout.add_widget(self.input_box)
 
-        # BoxLayout for info_label
+        #Další rozhraní(pro info)
         info_layout = BoxLayout(orientation='vertical', spacing=10)
         self.info_label = Label(text='', font_size=30)
         info_layout.add_widget(self.info_label)
 
-        # Add the word_layout and info_layout to the main_layout
         main_layout.add_widget(word_layout)
         main_layout.add_widget(info_layout)
 
         return main_layout
 
+    #Kontrola jestli uživatel zadal správné písmenko a uhodl jej(může být psáno i velkými písmeny)
     def check_guess(self, instance):
         guess = instance.text.lower()
 
@@ -100,7 +101,7 @@ class WordGuessingApp(App):
             self.info_label.text = "Hádej písmeno."
             instance.text = ""
             return
-
+    #Když uživatel uhodne, písmenko se dosadí na správné místo
         if guess in self.display:
             self.info_label.text = f"\nUž jsi uhodl '{guess}'."
         elif guess in self.chosen_word:
@@ -109,11 +110,12 @@ class WordGuessingApp(App):
                 if letter == guess:
                     self.display[position] = letter
             self.info_label.text = ""
+            #Když neuhodne -1 život
         else:
             self.lives -= 1
             self.info_label.text = f"\nHádal jsi '{guess}',což není písmeno ve slovu. \nMáš {self.lives} životů."
             self.current_stage += 1
-
+        #Výhra x Prohra
         if self.lives == 0:
             self.info_label.text = f"Prohrál jsi! slovo bylo {self.chosen_word}"
             self.input_box.disabled = True
